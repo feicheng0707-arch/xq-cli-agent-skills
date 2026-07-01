@@ -13,6 +13,7 @@ from typing import Any
 
 DEFAULT_XQ_CLI = Path.home() / ".hermes" / "node" / "bin" / "xq-cli"
 DEFAULT_CONFIG = Path.home() / ".xq-opencli" / "config.json"
+DEFAULT_CONFIG_DISPLAY = "~/.xq-opencli/config.json"
 
 OUTLINE_VALUE_FLAGS = {
     "pageScope": "--page-scope",
@@ -96,6 +97,11 @@ def main() -> int:
         emit(health(exe))
         return 0
 
+    if args.command == "login-status":
+        status = login_status(exe)
+        emit(status)
+        return 0 if status["ok"] else 1
+
     if args.command == "choices":
         if args.scope == "all":
             emit(
@@ -132,6 +138,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("health")
+    sub.add_parser("login-status")
 
     choices = sub.add_parser("choices")
     choices.add_argument("--scope", choices=("outline", "export", "all"), default="all")
@@ -259,19 +266,66 @@ def health(exe: Path) -> dict[str, Any]:
         export = run_json(exe, ["choices", "export", "--json"], timeout=30)
         result["choices"] = {"outlineOk": bool(outline.get("ok")), "exportOk": bool(export.get("ok"))}
         result["ok"] = bool(installed and config["tokenConfigured"] and outline.get("ok") and export.get("ok"))
+    result["login"] = login_evidence(result)
     return result
+
+
+def login_status(exe: Path) -> dict[str, Any]:
+    result = health(exe)
+    login = result["login"]
+    return {
+        "ok": bool(login["authenticated"]),
+        "state": login["state"],
+        "evidence": login["evidence"],
+        "rule": "Only report login success when ok is true. Do not infer or search guessed config paths.",
+        "repair": login["repair"],
+    }
+
+
+def login_evidence(health_result: dict[str, Any]) -> dict[str, Any]:
+    config = health_result.get("config", {})
+    choices = health_result.get("choices", {})
+    evidence = {
+        "xqCliInstalled": bool(health_result.get("installed")),
+        "configPathChecked": DEFAULT_CONFIG_DISPLAY,
+        "configExists": bool(config.get("exists")),
+        "baseUrlConfigured": bool(config.get("baseUrlConfigured")),
+        "tokenConfigured": bool(config.get("tokenConfigured")),
+        "outlineChoicesOk": bool(choices.get("outlineOk")),
+        "exportChoicesOk": bool(choices.get("exportOk")),
+    }
+    if not evidence["xqCliInstalled"]:
+        state = "not_installed"
+        repair = "Install xq-cli first, then run xq-cli login --browser."
+    elif not evidence["configExists"]:
+        state = "login_required"
+        repair = f"Run xq-cli login --browser and wait for it to finish. The current CLI config path checked is {DEFAULT_CONFIG_DISPLAY}."
+    elif not evidence["baseUrlConfigured"]:
+        state = "base_url_missing"
+        repair = "Run xq-cli login --browser or login with the required --base-url."
+    elif not evidence["tokenConfigured"]:
+        state = "token_missing"
+        repair = "Run xq-cli login --browser again and wait for the command to exit successfully."
+    elif not evidence["outlineChoicesOk"] or not evidence["exportChoicesOk"]:
+        state = "cli_probe_failed"
+        repair = "Run xq-cli choices outline --json and xq-cli choices export --json to inspect the CLI error."
+    else:
+        state = "authenticated"
+        repair = ""
+    return {"authenticated": state == "authenticated", "state": state, "evidence": evidence, "repair": repair}
 
 
 def inspect_config(path: Path) -> dict[str, Any]:
     if not path.exists():
-        return {"exists": False, "baseUrlConfigured": False, "tokenConfigured": False, "taskCacheConfigured": False}
+        return {"exists": False, "checkedPath": DEFAULT_CONFIG_DISPLAY, "baseUrlConfigured": False, "tokenConfigured": False, "taskCacheConfigured": False}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
-        return {"exists": True, "baseUrlConfigured": False, "tokenConfigured": False, "taskCacheConfigured": False, "unreadable": True}
+        return {"exists": True, "checkedPath": DEFAULT_CONFIG_DISPLAY, "baseUrlConfigured": False, "tokenConfigured": False, "taskCacheConfigured": False, "unreadable": True}
     lower_keys = {str(k).lower(): v for k, v in data.items()} if isinstance(data, dict) else {}
     return {
         "exists": True,
+        "checkedPath": DEFAULT_CONFIG_DISPLAY,
         "baseUrlConfigured": bool(lower_keys.get("baseurl") or lower_keys.get("base_url")),
         "tokenConfigured": bool(lower_keys.get("token") or lower_keys.get("access_token")),
         "taskCacheConfigured": bool(lower_keys.get("taskcache") or lower_keys.get("task_cache")),

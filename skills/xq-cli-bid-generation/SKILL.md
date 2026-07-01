@@ -13,6 +13,8 @@ This skill is for external agent-tool users. Do not assume the `xq-sidecar-servi
 
 - Treat `xq-cli` as a local business adapter, not a general shell.
 - Never print tokens, saved config contents, base URLs with credentials, raw headers, raw command argv containing secrets, or private local paths in final user-facing summaries.
+- Never infer the config path from the command name. The current CLI config path checked by this skill is `~/.xq-opencli/config.json`; do not search guessed paths such as `~/.xq-cli/config.json`.
+- Report login success only after `scripts/xq_cli_safe.py login-status` returns `ok: true`. If the login command is still running, report that authorization is pending.
 - Ask for explicit user approval before upload, generation, paid/charge flows, content write, or export.
 - Prefer machine-readable JSON commands. Do not use interactive menus unless the user is actively driving the terminal.
 - Summarize xq-cli JSON into user-safe status, `cid`, phase, artifacts, and next action. Do not paste large raw JSON unless the user asks for debugging details.
@@ -27,39 +29,46 @@ For details, read [references/safety-contract.md](references/safety-contract.md)
    python scripts/xq_cli_safe.py health
    ```
 
-2. Inspect choices before setting outline/export options:
+2. Login verification after install or login:
+   ```bash
+   python scripts/xq_cli_safe.py login-status
+   ```
+
+   Only say "login succeeded" when the command returns `ok: true` and `state: authenticated`. If it returns any other state, report the state and repair instruction. Do not inspect or print config file contents.
+
+3. Inspect choices before setting outline/export options:
    ```bash
    python scripts/xq_cli_safe.py choices --scope outline
    python scripts/xq_cli_safe.py choices --scope export
    ```
 
-3. Upload and initialize a task after explicit user approval:
+4. Upload and initialize a task after explicit user approval:
    ```bash
    python scripts/xq_cli_safe.py init --file /path/to/tender.docx --wait --i-understand-upload
    ```
 
-4. Wait for parse completion when needed:
+5. Wait for parse completion when needed:
    ```bash
    python scripts/xq_cli_safe.py parse-status --cid <cid> --uuid <uuid> --wait
    ```
 
-5. Generate outline after explicit user approval:
+6. Generate outline after explicit user approval:
    ```bash
    python scripts/xq_cli_safe.py outline --cid <cid> --wait --i-understand-mutation \
      --outline-options-json '{"pageScopeCode":2,"base":"0","themeStyle":4,"tableQuantity":2,"tableColor":"BLUE"}'
    ```
 
-6. Generate content after explicit user approval:
+7. Generate content after explicit user approval:
    ```bash
    python scripts/xq_cli_safe.py write --cid <cid> --type 1 --wait --i-understand-mutation
    ```
 
-7. Inspect status:
+8. Inspect status:
    ```bash
    python scripts/xq_cli_safe.py status --cid <cid> --content
    ```
 
-8. Export DOCX after explicit user approval:
+9. Export DOCX after explicit user approval:
    ```bash
    python scripts/xq_cli_safe.py export --cid <cid> --out /path/to/output --i-understand-export \
      --export-options-json '{"template":2,"layout":"enhanced","tableColor":"BLUE","tableStyle":"zebra"}'

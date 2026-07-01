@@ -26,6 +26,16 @@ xq-cli choices outline --json
 xq-cli choices export --json
 ```
 
+## Login Checks
+
+After `xq-cli login --browser` exits, prefer the wrapper:
+
+```bash
+python scripts/xq_cli_safe.py login-status
+```
+
+Do not guess config paths. The wrapper checks `~/.xq-opencli/config.json` and redacts credentials. Only treat login as successful when it prints `ok: true` and `state: authenticated`.
+
 ## Typical Raw Commands
 
 Use these only when the wrapper does not cover the needed operation.

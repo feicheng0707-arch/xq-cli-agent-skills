@@ -30,6 +30,25 @@ Require explicit user approval before:
 
 The wrapper script enforces confirmation flags for side-effect commands. If bypassing the wrapper for a valid reason, ask the user first and state the exact command category.
 
+## Login Verification
+
+Do not infer login state from guessed config paths, common CLI conventions, or a browser window being opened.
+
+Use:
+
+```bash
+python scripts/xq_cli_safe.py login-status
+```
+
+Only report login success when the JSON response has:
+
+- `ok: true`
+- `state: authenticated`
+
+The wrapper checks the current xq-cli config location `~/.xq-opencli/config.json` for the presence of non-empty `baseUrl`/`base_url` and `token`/`access_token` keys without printing their values. Do not read or output the config contents.
+
+If `xq-cli login --browser` is still running or waiting for user authorization, report login as pending. If it exits non-zero or `login-status` returns another state, report the state and repair instruction.
+
 ## Failure Handling
 
 Map failures into one of these user-facing states:

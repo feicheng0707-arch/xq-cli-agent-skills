@@ -3,7 +3,7 @@
   "skill": "xq-cli-bid-generation",
   "skillsShSourcePlaceholder": "xqyz/xq-cli-agent-skills",
   "publishBaseUrlPlaceholder": "https://example.com/xique-agent-skills",
-  "recommendedInstallPrompt": "请帮我安装并登录喜鹊 xq-cli 标书生成能力：先执行 npm install -g @xqyz/xq-cli@0.1.2；再执行 npx skills add {{GITHUB_REPO}} --skill xq-cli-bid-generation --agent codex -g -y 安装 agent skill。如果你不是 Codex，请把 --agent codex 替换成当前 agent 对应的 skills.sh 名称，例如 claude-code；不确定时用 --agent '*'。然后运行 xq-cli --help 确认命令可用，再运行 xq-cli login --browser。登录时如果终端输出 verification_uri、verification URL、授权链接或 user_code，请发给我，并等登录命令结束后告诉我 skill 安装校验和 xq-cli 登录是否成功。不要输出 token、配置文件内容或任何密钥。",
+  "recommendedInstallPrompt": "请帮我安装并登录喜鹊 xq-cli 标书生成能力：先执行 npm install -g @xqyz/xq-cli@0.1.2；再执行 npx skills add {{GITHUB_REPO}} --skill xq-cli-bid-generation --agent codex -g -y 安装 agent skill。如果你不是 Codex，请把 --agent codex 替换成当前 agent 对应的 skills.sh 名称，例如 claude-code；不确定时用 --agent '*'。然后运行 xq-cli --help 确认命令可用，再运行 xq-cli login --browser。登录时如果终端输出 verification_uri、verification URL、授权链接或 user_code，请发给我，并等登录命令结束。登录命令结束后不要猜配置目录，也不要查找 ~/.xq-cli；Codex 请运行 python3 \"${CODEX_HOME:-$HOME/.codex}/skills/xq-cli-bid-generation/scripts/xq_cli_safe.py\" login-status，Claude Code 请运行 python3 \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills/xq-cli-bid-generation/scripts/xq_cli_safe.py\" login-status。只有 login-status 输出 ok: true 且 state: authenticated 时，才告诉我登录成功；否则告诉我 pending/failed 和 repair。不要输出 token、配置文件内容或任何密钥。",
   "files": [
     {
       "name": "skills.sh.json",
@@ -15,7 +15,7 @@
     },
     {
       "name": "install-skill.sh",
-      "sha256": "f19f31849a0c13cca9659e4fbdf62c6bd3d8aecf7d8b3ddc83d92ae200cea3c0"
+      "sha256": "953cdc3c673d91d4ec6dcbcafde238893288a75b6e87c52cb9686e518d869c83"
     },
     {
       "name": "install_xq_cli_bid_generation.py",
@@ -23,11 +23,11 @@
     },
     {
       "name": "xq-cli-bid-generation-20260701.zip",
-      "sha256": "b34bcfb7c8e65ed7da12fdda05dcc36c9eafb8dfd825521919b66c97708a7a71"
+      "sha256": "8b62515374a0234b0a9052649095ff44b6d44da6bebb2d9f1e4ea5ebc9015033"
     },
     {
       "name": "xq-cli-bid-generation-20260701.tar.gz",
-      "sha256": "0a84c40f8260a97791561c13fd2e45804ec800fc6624a5bad0fd7f55a25f2de1"
+      "sha256": "ece9bc03c233b492257f9b49ded7da92e6d4a3adb8417643a1cc5a9cc128c068"
     }
   ]
 }
