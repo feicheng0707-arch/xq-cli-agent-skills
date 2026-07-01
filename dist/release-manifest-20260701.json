@@ -1,0 +1,33 @@
+{
+  "version": "20260701",
+  "skill": "xq-cli-bid-generation",
+  "skillsShSourcePlaceholder": "xqyz/xq-cli-agent-skills",
+  "publishBaseUrlPlaceholder": "https://example.com/xique-agent-skills",
+  "recommendedInstallPrompt": "请帮我安装并登录喜鹊 xq-cli 标书生成能力：先执行 npm install -g @xqyz/xq-cli@0.1.2；再执行 npx skills add {{GITHUB_REPO}} --skill xq-cli-bid-generation --agent codex -g -y 安装 agent skill。如果你不是 Codex，请把 --agent codex 替换成当前 agent 对应的 skills.sh 名称，例如 claude-code；不确定时用 --agent '*'。然后运行 xq-cli --help 确认命令可用，再运行 xq-cli login --browser。登录时如果终端输出 verification_uri、verification URL、授权链接或 user_code，请发给我，并等登录命令结束后告诉我 skill 安装校验和 xq-cli 登录是否成功。不要输出 token、配置文件内容或任何密钥。",
+  "files": [
+    {
+      "name": "skills.sh.json",
+      "sha256": "23e8b19f3455f3b6a1c6d17df1ab7a24052752bf8343d9472bca93a324cf4dfa"
+    },
+    {
+      "name": "install.sh",
+      "sha256": "00b7a80f583233fd26d32010cf37d74c26d68c43c90dfb7ba9e53f8ad4cff7c1"
+    },
+    {
+      "name": "install-skill.sh",
+      "sha256": "f19f31849a0c13cca9659e4fbdf62c6bd3d8aecf7d8b3ddc83d92ae200cea3c0"
+    },
+    {
+      "name": "install_xq_cli_bid_generation.py",
+      "sha256": "2c12b2062333dd90d85ada3e0f283455a8dba8e4e2331039cbf305249d7995e4"
+    },
+    {
+      "name": "xq-cli-bid-generation-20260701.zip",
+      "sha256": "b34bcfb7c8e65ed7da12fdda05dcc36c9eafb8dfd825521919b66c97708a7a71"
+    },
+    {
+      "name": "xq-cli-bid-generation-20260701.tar.gz",
+      "sha256": "0a84c40f8260a97791561c13fd2e45804ec800fc6624a5bad0fd7f55a25f2de1"
+    }
+  ]
+}

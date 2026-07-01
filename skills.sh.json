@@ -1,0 +1,13 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Xique",
+      "description": "Skills for operating Xique xq-cli from local coding agents.",
+      "skills": [
+        "xq-cli-bid-generation"
+      ]
+    }
+  ]
+}

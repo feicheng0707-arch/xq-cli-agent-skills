@@ -1,0 +1,4 @@
+name: xq-cli-bid-generation
+display_name: XQ CLI Bid Generation
+short_description: Safely operate xq-cli for Xique bid generation from local agent tools.
+default_prompt: Check xq-cli readiness, then help me initialize, generate, inspect, or export a Xique bid task using safe commands.
