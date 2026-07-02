@@ -8,6 +8,14 @@
       "skills": [
         "xq-cli-bid-generation"
       ]
+    },
+    {
+      "title": "Bid Review",
+      "description": "Independent review agents for technical bid body quality and dark-bid text compliance.",
+      "skills": [
+        "bid-tech-scheme-review",
+        "bid-dark-text-review"
+      ]
     }
   ]
 }

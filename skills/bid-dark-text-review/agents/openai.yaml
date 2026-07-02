@@ -1,0 +1,4 @@
+interface:
+  display_name: "暗标正文审查"
+  short_description: "审查技术暗标正文中的投标人身份暴露风险"
+  default_prompt: "Use $bid-dark-text-review to find bidder identity exposure risks in a technical dark-bid body."
